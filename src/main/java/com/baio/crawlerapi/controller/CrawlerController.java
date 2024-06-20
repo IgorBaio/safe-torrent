@@ -14,10 +14,10 @@ import com.baio.crawlerapi.service.CrawlerService;
 public class CrawlerController {
     
     @GetMapping("/catalog")
-    public List<MoviesCatalogDto> getSites(){
+    public List<MoviesCatalogDto> getSites(@RequestParam(defaultValue="1", required=false) Integer page){
         CrawlerService crawlerService = new CrawlerService();
 
-        return crawlerService.crawler("https://comando.la/");
+        return crawlerService.crawler("https://comando.la/page/"+page);
 
     }
 
