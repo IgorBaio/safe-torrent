@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baio.crawlerapi.dto.Page;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +15,7 @@ import com.baio.crawlerapi.dto.MagnetsLinksDto;
 import com.baio.crawlerapi.dto.MoviesCatalogDto;
 
 public class CrawlerService {
-    public static List<MoviesCatalogDto> crawler(String url) {
+    public static Page crawler(String url) {
 
         List<MoviesCatalogDto> moviesCatalogDto = new ArrayList<MoviesCatalogDto>();
         try {
@@ -49,7 +50,7 @@ public class CrawlerService {
 
             }
 
-            return moviesCatalogDto;
+            return new Page<>( listPages.size() ,moviesCatalogDto.size() , moviesCatalogDto);
 
         } catch (IOException e) {
             e.printStackTrace();
