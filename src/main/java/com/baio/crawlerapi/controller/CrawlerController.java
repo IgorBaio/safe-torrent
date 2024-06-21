@@ -14,9 +14,16 @@ import com.baio.crawlerapi.service.CrawlerService;
 public class CrawlerController {
 
     @GetMapping("/catalog")
-    public Page getSites(@RequestParam(defaultValue="1", required=false) Integer page){
+    public Page getSites(@RequestParam (required=false) String search ,@RequestParam(defaultValue="1", required=false) Integer page){
         CrawlerService crawlerService = new CrawlerService();
-        return crawlerService.crawler("http://comando.la/page/"+page);
+
+        String queryParam = String.valueOf(page);
+
+        if(search != null){
+            queryParam += "/?s="+search;
+        }
+
+        return crawlerService.crawler("https://comando.la/page/"+queryParam);
     }
 
     @GetMapping("/magnet")
@@ -25,17 +32,5 @@ public class CrawlerController {
 
         return crawlerService.getMagnet(url);
     }
-
-    @GetMapping("/search")
-    public  List getAllBySearch(
-            @RequestParam(required=false) Integer page
-            ,@RequestParam String search){
-        CrawlerService crawlerService = new CrawlerService();
-
-        String url = (page == null) ? "https://comando.la/?s="+search : "https://comando.la/page/" + page + "/?s=" + search;
-
-        return crawlerService.crawler(url).content();
-    }
-
 
 }

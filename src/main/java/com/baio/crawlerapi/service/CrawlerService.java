@@ -3,6 +3,8 @@ package com.baio.crawlerapi.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.baio.crawlerapi.dto.Page;
 import org.jsoup.Jsoup;
@@ -50,7 +52,21 @@ public class CrawlerService {
 
             }
 
-            return new Page<>( listPages.size() ,moviesCatalogDto.size() , moviesCatalogDto);
+            String regex = "\\b\\d+\\b";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
+            System.out.println(listPages.get( listPages.size() -1));
+
+            Matcher matcher = pattern.matcher(listPages.get(0));
+
+            Integer total = 0;
+            if (matcher.find()){
+                total = Integer.valueOf(matcher.group());
+            }
+
+            System.out.println(total);
+
+            return new Page<>(listPages.size() ,moviesCatalogDto.size() , moviesCatalogDto);
 
         } catch (IOException e) {
             e.printStackTrace();
