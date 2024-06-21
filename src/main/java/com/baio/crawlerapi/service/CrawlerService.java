@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.baio.crawlerapi.dto.Page;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,6 +14,7 @@ import org.jsoup.select.Elements;
 import com.baio.crawlerapi.dto.MagnetDto;
 import com.baio.crawlerapi.dto.MagnetsLinksDto;
 import com.baio.crawlerapi.dto.MoviesCatalogDto;
+import com.baio.crawlerapi.dto.Page;
 
 public class CrawlerService {
     public static Page crawler(String url) {
@@ -40,7 +40,7 @@ public class CrawlerService {
 
             }
 
-            for(int i = 0; i< linksMovies.size(); i++){
+            for (int i = 0; i < linksMovies.size(); i++) {
                 Element link = linksMovies.get(i);
                 Element article = articles.get(i);
                 String titleMovie = link.text();
@@ -52,21 +52,8 @@ public class CrawlerService {
 
             }
 
-            String regex = "\\b\\d+\\b";
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
-            System.out.println(listPages.get( listPages.size() -1));
-
-            Matcher matcher = pattern.matcher(listPages.get(0));
-
-            Integer total = 0;
-            if (matcher.find()){
-                total = Integer.valueOf(matcher.group());
-            }
-
-            System.out.println(total);
-
-            return new Page<>(listPages.size() ,moviesCatalogDto.size() , moviesCatalogDto);
+            return new Page<>(extractTotalPages(listPages), moviesCatalogDto.size(), moviesCatalogDto);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,6 +111,28 @@ public class CrawlerService {
             }
 
         }
+    }
+
+    private static Integer extractTotalPages(List<String> listPages) {
+
+        String regex = "\\b\\d+\\b";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Integer total = 1;
+
+        for(String urlPage: listPages){
+            Matcher matcher = pattern.matcher(urlPage);
+
+            if (matcher.find()) {
+
+                Integer page = Integer.valueOf(matcher.group());
+
+                if(page > total)
+                    total = page;
+
+            }
+        }
+
+        return total;
     }
 
 }
