@@ -1,16 +1,16 @@
 package com.baio.crawlerapi.controller;
 
-import java.util.List;
-
-import com.baio.crawlerapi.dto.Page;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baio.crawlerapi.dto.MagnetsLinksDto;
+import com.baio.crawlerapi.dto.Page;
 import com.baio.crawlerapi.service.CrawlerService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class CrawlerController {
 
     @GetMapping("/catalog")
