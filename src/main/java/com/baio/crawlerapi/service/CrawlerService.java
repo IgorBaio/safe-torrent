@@ -24,6 +24,7 @@ public class CrawlerService {
             // Seleciona todos os elementos <a> com atributos href
             Elements linksMovies = doc.select(".entry-header h2.entry-title a[href]");
             Elements linksPages = doc.select("a[href]");
+            Elements articles = doc.select("article div.entry-content img");
 
             List<String> listPages = new ArrayList<String>();
 
@@ -35,13 +36,15 @@ public class CrawlerService {
                 }
 
             }
-            for (Element link : linksMovies) {
-                String linkMovie = link.attr("href");
-                System.out.println("Link: " + linkMovie);
-                String titleMovie = link.text();
-                System.out.println("Titulo: " + titleMovie);
 
-                MoviesCatalogDto movieCatalogDto = new MoviesCatalogDto(titleMovie, linkMovie);
+            for(int i = 0; i< linksMovies.size(); i++){
+                Element link = linksMovies.get(i);
+                Element article = articles.get(i);
+                String titleMovie = link.text();
+                String linkMovie = link.attr("href");
+                String urlImg = article.attr("src");
+
+                MoviesCatalogDto movieCatalogDto = new MoviesCatalogDto(titleMovie, urlImg, linkMovie);
                 moviesCatalogDto.add(movieCatalogDto);
 
             }
@@ -88,9 +91,7 @@ public class CrawlerService {
     private static void extractMagnetUrl(Elements linksMagnets, List<MagnetDto> magnets) {
         for (Element link : linksMagnets) {
             String linkMovie = link.attr("href");
-            System.out.println("Link: " + linkMovie);
             String titleButton = link.text();
-            System.out.println("Titulo: " + titleButton);
             if (linkMovie.contains("magnet:")) {
                 if (linkMovie.toLowerCase().contains("dublado.eng"))
                     titleButton += " - Lengendado";
