@@ -92,7 +92,9 @@ public class CrawlerService {
             String titleButton = link.text();
             System.out.println("Titulo: " + titleButton);
             if (linkMovie.contains("magnet:")) {
-                if (linkMovie.toLowerCase().contains("dublado"))
+                if (linkMovie.toLowerCase().contains("dublado.eng"))
+                    titleButton += " - Lengendado";
+                else if (linkMovie.toLowerCase().contains("dublado"))
                     titleButton += " - Dublado";
                 else if (linkMovie.toLowerCase().contains("dual"))
                     titleButton += " - Dual Audio";
@@ -102,8 +104,6 @@ public class CrawlerService {
                 magnets.add(new MagnetDto(titleButton, linkMovie));
 
             }
-            // if (titleButton.toLowerCase().contains("download magnet")) {
-            // }
 
         }
     }
