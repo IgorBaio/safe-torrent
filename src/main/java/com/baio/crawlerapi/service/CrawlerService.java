@@ -3,6 +3,8 @@ package com.baio.crawlerapi.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,9 +14,10 @@ import org.jsoup.select.Elements;
 import com.baio.crawlerapi.dto.MagnetDto;
 import com.baio.crawlerapi.dto.MagnetsLinksDto;
 import com.baio.crawlerapi.dto.MoviesCatalogDto;
+import com.baio.crawlerapi.dto.Page;
 
 public class CrawlerService {
-    public static List<MoviesCatalogDto> crawler(String url) {
+    public static Page crawler(String url) {
 
         List<MoviesCatalogDto> moviesCatalogDto = new ArrayList<MoviesCatalogDto>();
         try {
@@ -37,7 +40,7 @@ public class CrawlerService {
 
             }
 
-            for(int i = 0; i< linksMovies.size(); i++){
+            for (int i = 0; i < linksMovies.size(); i++) {
                 Element link = linksMovies.get(i);
                 Element article = articles.get(i);
                 String titleMovie = link.text();
@@ -49,7 +52,8 @@ public class CrawlerService {
 
             }
 
-            return moviesCatalogDto;
+
+            return new Page<>(extractTotalPages(listPages), moviesCatalogDto.size(), moviesCatalogDto);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,6 +111,28 @@ public class CrawlerService {
             }
 
         }
+    }
+
+    private static Integer extractTotalPages(List<String> listPages) {
+
+        String regex = "\\b\\d+\\b";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Integer total = 1;
+
+        for(String urlPage: listPages){
+            Matcher matcher = pattern.matcher(urlPage);
+
+            if (matcher.find()) {
+
+                Integer page = Integer.valueOf(matcher.group());
+
+                if(page > total)
+                    total = page;
+
+            }
+        }
+
+        return total;
     }
 
 }
