@@ -1,5 +1,7 @@
 package com.baio.crawlerapi.controller;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +29,7 @@ public class CrawlerController {
     }
 
     @GetMapping("/magnet")
-    public MagnetsLinksDto getMagnet(@RequestParam String url){
+    public MagnetsLinksDto getMagnet(@RequestParam String url) throws XPathExpressionException{
         CrawlerService crawlerService = new CrawlerService();
 
         return crawlerService.getMagnet(url);

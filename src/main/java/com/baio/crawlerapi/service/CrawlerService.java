@@ -52,7 +52,6 @@ public class CrawlerService {
 
             }
 
-
             return new Page<>(extractTotalPages(listPages), moviesCatalogDto.size(), moviesCatalogDto);
 
         } catch (IOException e) {
@@ -78,8 +77,11 @@ public class CrawlerService {
                 extractMagnetUrl(linksMagnetsButtons, magnets);
             } else {
                 Elements linksMagnetsLinks = doc.select("p a[href]");
-                if (linksMagnetsLinks.size() > 0)
-                    extractMagnetUrl(linksMagnetsLinks, magnets);
+                Elements pElements = doc.select("p:has(> strong, > a)");
+                if (linksMagnetsLinks.size() > 0) {
+                    extractMagnetUrl(linksMagnetsLinks, magnets, pElements);
+
+                }
             }
 
             MagnetsLinksDto magnetsLinksDto = new MagnetsLinksDto(title, magnets);
@@ -113,20 +115,57 @@ public class CrawlerService {
         }
     }
 
+    private static void extractMagnetUrl(Elements linksMagnets, List<MagnetDto> magnets, Elements pElements) {
+
+        for (Element link : linksMagnets) {
+            String linkMovie = link.attr("href");
+            String titleButton = link.text();
+            if (linkMovie.contains("magnet:")) {
+                if (linkMovie.toLowerCase().contains("dublado.eng"))
+                    titleButton += " - Lengendado";
+                else if (linkMovie.toLowerCase().contains("dublado"))
+                    titleButton += " - Dublado";
+                else if (linkMovie.toLowerCase().contains("dual"))
+                    titleButton += " - Dual Audio";
+                else
+                    titleButton += " - Legendado";
+
+                for (Element pElement : pElements) {
+                    Element strongElement = pElement.selectFirst("strong");
+                    Element aElement = pElement.selectFirst("a");
+                    if (strongElement != null && aElement != null) {
+                        String aLink = aElement.attr("href");
+                        if (strongElement.siblingElements().contains(aElement)
+                                && aLink.toLowerCase().equals(linkMovie.toLowerCase())) {
+                            System.out.println("label: " + strongElement.text());
+                            String strongValue = strongElement.text();
+                            titleButton = strongValue + " - " + titleButton;
+
+                        }
+                    }
+                }
+
+                magnets.add(new MagnetDto(titleButton, linkMovie));
+
+            }
+
+        }
+    }
+
     private static Integer extractTotalPages(List<String> listPages) {
 
         String regex = "\\b\\d+\\b";
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Integer total = 1;
 
-        for(String urlPage: listPages){
+        for (String urlPage : listPages) {
             Matcher matcher = pattern.matcher(urlPage);
 
             if (matcher.find()) {
 
                 Integer page = Integer.valueOf(matcher.group());
 
-                if(page > total)
+                if (page > total)
                     total = page;
 
             }
