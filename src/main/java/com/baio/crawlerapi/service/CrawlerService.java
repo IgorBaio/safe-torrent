@@ -73,11 +73,11 @@ public class CrawlerService {
             Elements linksMagnetsButtons = doc.select(".customButton");
             List<MagnetDto> magnets = new ArrayList<>();
 
+            Elements pElements = doc.select("p:has(> strong, > a)");
             if (linksMagnetsButtons.size() > 0) {
-                extractMagnetUrl(linksMagnetsButtons, magnets);
+                extractMagnetUrl(linksMagnetsButtons, magnets, pElements);
             } else {
                 Elements linksMagnetsLinks = doc.select("p a[href]");
-                Elements pElements = doc.select("p:has(> strong, > a)");
                 if (linksMagnetsLinks.size() > 0) {
                     extractMagnetUrl(linksMagnetsLinks, magnets, pElements);
 
@@ -145,6 +145,9 @@ public class CrawlerService {
                     }
                 }
 
+                if (titleButton.contains(" - Download Magnet")) {
+                    titleButton = titleButton.replace(" - Download Magnet", "");
+                }
                 magnets.add(new MagnetDto(titleButton, linkMovie));
 
             }
