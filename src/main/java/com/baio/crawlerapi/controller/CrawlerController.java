@@ -12,7 +12,7 @@ import com.baio.crawlerapi.dto.Page;
 import com.baio.crawlerapi.service.CrawlerService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://safe-torrent-front.onrender.com"})
 public class CrawlerController {
 
     @GetMapping("/catalog")
