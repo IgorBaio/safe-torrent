@@ -162,7 +162,7 @@ public class CrawlerService {
                     titleButton = titleButton.replace(" - Download Magnet", "");
                 }
 
-                if(previousTitleButton.toLowerCase().contains(label.toLowerCase()) && label.toLowerCase().contains("episódio")){
+                if(!titleButton.contains(label) && previousTitleButton.toLowerCase().contains(label.toLowerCase()) && label.toLowerCase().contains("episódio") ){
                     titleButton = label + " " + titleButton;
                 }
 
