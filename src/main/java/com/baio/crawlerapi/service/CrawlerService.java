@@ -115,6 +115,9 @@ public class CrawlerService {
         }
     }
 
+    private static String label = "";
+    private static String previousTitleButton = "";
+
     private static void extractMagnetUrl(Elements linksMagnets, List<MagnetDto> magnets, Elements pElements) {
 
         for (Element link : linksMagnets) {
@@ -130,24 +133,39 @@ public class CrawlerService {
                 else
                     titleButton += " - Legendado";
 
+
                 for (Element pElement : pElements) {
                     Element strongElement = pElement.selectFirst("strong");
+                    Element bElement = pElement.selectFirst("b");
+                    Element boldElement = null;
+                    if(strongElement != null)
+                        boldElement = strongElement;
+                    else if(bElement != null)
+                        boldElement = bElement;
                     Element aElement = pElement.selectFirst("a");
-                    if (strongElement != null && aElement != null) {
+                    if (boldElement != null && aElement != null) {
                         String aLink = aElement.attr("href");
-                        if (strongElement.siblingElements().contains(aElement)
+                        if (boldElement.siblingElements().contains(aElement)
                                 && aLink.toLowerCase().equals(linkMovie.toLowerCase())) {
-                            System.out.println("label: " + strongElement.text());
-                            String strongValue = strongElement.text();
-                            titleButton = strongValue + " - " + titleButton;
-
+                            String strongValue = boldElement.text();
+                            if(strongValue != null && !strongValue.isEmpty() && !strongValue.isBlank())
+                                    label = strongValue;
+                            titleButton = label+ " " + titleButton;
+                            previousTitleButton = titleButton;
                         }
+
+                        
                     }
                 }
 
                 if (titleButton.contains(" - Download Magnet")) {
                     titleButton = titleButton.replace(" - Download Magnet", "");
                 }
+
+                if(previousTitleButton.toLowerCase().contains(label.toLowerCase()) && label.toLowerCase().contains("episódio")){
+                    titleButton = label + " " + titleButton;
+                }
+
                 magnets.add(new MagnetDto(titleButton, linkMovie));
 
             }
