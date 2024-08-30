@@ -180,6 +180,9 @@ public class CrawlerService {
         Integer total = 1;
 
         for (String urlPage : listPages) {
+            if(!urlPage.contains("https://comando.la/page")){
+                break;
+            }
             Matcher matcher = pattern.matcher(urlPage);
 
             if (matcher.find()) {
